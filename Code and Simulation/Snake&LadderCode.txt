@@ -1,0 +1,226 @@
+module snake_and_ladder(p1,p2,p3,p4,start,clk,res);
+output reg[7:0] p1,p2,p3,p4;
+reg[3:0]rand;
+input start,clk,res;
+integer i;
+  
+task throw_dice;
+  inout reg[7:0] p;
+  output reg[3:0] rand;
+  begin
+  rand= 1+{$random}%6;
+  $display("Advance %d blocks.",rand);
+  p=p+rand;
+  if(p>8'd100)
+    p=p-rand;
+  $display("Your are currently at %d.",p);
+end
+endtask
+
+task update_pos;
+  inout reg[7:0] p;
+  begin
+    case(p)
+      8'd99:begin 
+             p=8'd6;
+            $display("You fell on a snake, you will be demoted to position %d.",p);
+          end
+      8'd88:begin 
+             p=8'd67;
+            $display("You fell on a snake, you will be demoted to position %d.",p);
+          end   
+      8'd71:begin 
+             p=8'd29;
+            $display("You fell on a snake, you will be demoted to position %d.",p);
+             end
+      8'd55:begin 
+             p=8'd13;
+            $display("You fell on a snake, you will be demoted to position %d.",p);
+          end
+      8'd24:begin 
+             p=8'd1;
+            $display("You fell on a snake, you will be demoted to position %d.",p);
+          end 
+      8'd42:begin
+            p= 8'd81;
+            $display("You found a ladder, you will be promoted to position %d.",p);
+          end
+      8'd15:begin
+            p= 8'd97;
+            $display("You found a ladder, you will be promoted to position %d.",p);
+          end   
+      8'd66:begin
+            p= 8'd87;
+            $display("You found a ladder, you will be promoted to position %d.",p);
+          end  
+          
+      8'd8:begin
+            p= 8'd31;
+            $display("You found a ladder, you will be promoted to position %d.",p);
+          end  
+        endcase
+      end
+    endtask
+    
+always@(posedge clk)
+begin
+  if (res)
+    begin
+    p1=8'd0;
+    p2=8'd0;
+    p3=8'd0;
+    p4=8'd0;
+    i=1;
+  end
+end     
+always@(posedge clk)
+begin
+ $display("Current positions are %d %d %d %d.",p1,p2,p3,p4);
+  if(start)
+  begin 
+  if(i==1)
+    begin
+  $display("Player 1's turn.");
+ throw_dice(p1,rand);
+ update_pos(p1);
+  if(p1==8'd100)
+    begin
+      $display("Congrats Player 1, you are the winner!!!");
+      $display("Other players are at p2 %d,p3 %d,p4 %d.",p2,p3,p4);
+      #5 $finish;
+    end
+    i=i+1;
+  end
+else if(i==2)
+    begin
+    $display("Player 2's turn.");
+  throw_dice(p2,rand);
+  update_pos(p2);
+  if(p2==8'd100)
+    begin
+      $display("Congrats Player 2, you are the winner!!!");
+      $display("Other players are at p1 %d,p3 %d,p4 %d.",p1,p3,p4);
+      #5 $finish;
+    end
+    i=i+1;
+  end
+else if(i==3)
+    begin
+  $display("Player 3's turn.");
+  throw_dice(p3,rand);
+  update_pos(p3);
+  if(p3==8'd100)
+    begin
+      $display("Congrats Player 3, you are the winner!!!");
+      $display("Other players are at p1 %d,p2 %d,p4 %d.",p1,p2,p4);
+      #5 $finish;
+    end
+    i=i+1;
+  end
+ else if(i==4)
+    begin
+  $display("Player 4's turn.");
+  throw_dice(p4,rand);
+  update_pos(p4);
+  if(p4==8'd100)
+    begin
+      $display("Congrats Player 4, you are the winner!!!");
+      $display("Other players are at p1 %d,p2 %d,p3 %d.",p1,p2,p3);
+      #5 $finish;
+    end
+    i=1;
+   end
+ end
+end
+endmodule
+
+
+module testbench();
+  wire[7:0] p1,p2,p3,p4;
+  reg start,clk,res;
+  snake_and_ladder s1(p1,p2,p3,p4,start,clk,res);
+  initial
+  begin
+    
+     clk=1'b1;
+     res=1'b1;
+     start=1'b1; 
+    #1 clk=1'b0;
+    #1 res=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    #1 clk=1'b0;
+    #1 clk=1'b1;
+    
+   end
+endmodule
+
